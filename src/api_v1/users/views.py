@@ -1,25 +1,31 @@
-from itertools import product
-
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud
 from .schemas import Users, UsersCreate
+from src.core.models import db_helper
 
 
 router = APIRouter(tags=["Users"])
 
 
 @router.get("/", response_model=list[Users])
-async def get_users(session):
+async def get_users(session: AsyncSession = Depends(db_helper.session_dependency)):
     return await crud.get_users(session=session)
 
 
 @router.post("/", response_model=Users)
-async def create_user(session, user_in: UsersCreate):
+async def create_user(
+        user_in: UsersCreate,
+        session: AsyncSession = Depends(db_helper.session_dependency)
+):
     return await crud.create_user(session=session, user_in=user_in)
 
 
 @router.get("/{user_id}/", response_model=Users)
-async def get_user(user_id: int, session):
+async def get_user(
+        user_id: int,
+        session: AsyncSession = Depends(db_helper.session_dependency)
+):
     user = await crud.get_user_by_id(session=session, user_id=user_id)
 
     if user:
