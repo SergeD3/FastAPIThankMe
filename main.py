@@ -1,7 +1,7 @@
 import uvicorn
 
 from contextlib import asynccontextmanager
-from src.core.config import Settings
+from src.core.config import settings
 from src.api_v1 import router as router_v1
 from src.core.models import Base, db_helper
 from fastapi import FastAPI
@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(router=router_v1, prefix=Settings.api_v1_prefix)
+app.include_router(router=router_v1, prefix=settings.api_v1_prefix)
 
 @app.get("/appreciations", tags=["Appreciations"])
 async def get_appreciations_by_user():

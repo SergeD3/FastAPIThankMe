@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.models import Users
-from .schemas import UsersCreate
+from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 
 
 async def get_users(session: AsyncSession) -> list[Users]:
@@ -24,10 +24,30 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> Users | None:
     return await session.get(Users, user_id)
 
 
-async def create_user(session: AsyncSession, user_in: UsersCreate) -> Users:
+async def create_user(session: AsyncSession, user_in: UserCreate) -> Users:
     user = Users(**user_in.model_dump())
     session.add(user)
     await session.commit()
     await session.refresh(user)
 
     return user
+
+
+async def update_user(
+        session: AsyncSession,
+        user: Users,
+        user_update: UserUpdate | UserUpdatePartial,
+        partial: bool = False,
+) -> Users:
+    for name, value in user_update.model_dump(exclude_unset=partial).items():
+        setattr(user, name, value)
+
+    await session.commit()
+    return user
+
+async def delete_user(
+        session: AsyncSession,
+        user: Users
+) -> None:
+    await session.delete(user)
+    await session.commit()
