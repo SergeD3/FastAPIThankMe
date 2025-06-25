@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -18,7 +18,11 @@ async def get_users(
     return await crud.get_users(session=session)
 
 
-@router.post("/", response_model=Users)
+@router.post(
+    "/",
+    response_model=Users,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_user(
         user_in: UserCreate,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency)
@@ -43,3 +47,24 @@ async def update_user(
         user=user,
         user_update=user_update,
     )
+
+
+@router.patch("/{user_id}/")
+async def update_user_partial(
+    user_update: UserUpdatePartial,
+    user: Users = Depends(user_by_id),
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await crud.update_user(
+        session=session,
+        user=user,
+        user_update=user_update,
+        partial=True,
+    )
+
+@router.delete("/{user_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+        user: Users = Depends(user_by_id),
+        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+) -> None:
+    await crud.delete_user(session=session, user=user)
