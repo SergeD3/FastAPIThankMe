@@ -7,13 +7,13 @@ class UsersBase(BaseModel):
     telegram_username: str
 
 
-class UserCreate(UsersBase):
-    pass
-
-
 class Users(UsersBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+
+class UserCreate(UsersBase):
+    pass
 
 
 class UserUpdate(UserCreate):
@@ -24,3 +24,5 @@ class UserUpdatePartial(UserCreate):
     name: str | None = None
     position: str | None = None
     telegram_username: str | None = None
+
+
