@@ -32,10 +32,5 @@ async def home():
     return {"message": "home"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
 if __name__ == "__main__":
     uvicorn.run(app="main:app", reload=True)

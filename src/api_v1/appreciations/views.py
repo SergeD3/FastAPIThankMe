@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from .dependencies import appreciation_by_id
 
 from . import crud
 from .schemas import (
@@ -34,7 +34,7 @@ async def create_appreciation(
 
 @router.get("/{appreciation_id}/", response_model=Appreciations)
 async def get_appreciation(
-        appreciation: Appreciations = Depends(...),
+        appreciation: Appreciations = Depends(appreciation_by_id),
 ):
     return appreciation
 
@@ -42,7 +42,7 @@ async def get_appreciation(
 @router.put("/{appreciation_id}/")
 async def update_appreciation(
     appreciation_update: AppreciationUpdate,
-    appreciation: Appreciations = Depends(...),
+    appreciation: Appreciations = Depends(appreciation_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_appreciation(
@@ -55,7 +55,7 @@ async def update_appreciation(
 @router.patch("/{appreciation_id}/")
 async def update_user_partial(
     appreciation_update: AppreciationUpdatePartial,
-    appreciation: Appreciations = Depends(...),
+    appreciation: Appreciations = Depends(appreciation_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_appreciation(
