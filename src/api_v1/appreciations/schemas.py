@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 class AppreciationsBase(BaseModel):
     message: str
-    to_: str
+    to_: int
     from_: int
     date_created: datetime
 
@@ -24,6 +24,6 @@ class AppreciationUpdate(AppreciationsBase):
 
 class AppreciationUpdatePartial(AppreciationsBase):
     message: str | None = None
-    to_: str | None = None
+    to_: int | None = None
     from_: int | None = None
     date_created: datetime = datetime.now()
