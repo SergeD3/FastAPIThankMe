@@ -18,14 +18,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(router=router_v1, prefix=settings.api_v1_prefix)
 
-@app.get("/appreciations", tags=["Appreciations"])
-async def get_appreciations_by_user():
-    return {"message": "get_appreciations_by_user"}
-
-
-@app.get("/feedback", tags=["Feedbacks"])
-async def get_feedbacks_by_user():
-    return {"message": "get_feedbacks_by_user"}
 
 @app.get("/", tags=["Home"])
 async def home():
